@@ -8,7 +8,7 @@ Manage inventory, create offers with 2+ stickers, apply automatic bundle discoun
 
 ## Data model
 
-- `Laminas`: sticker inventory and pricing.
+- `Cards`: sticker inventory and pricing.
 - `Buyers`: buyer contact info.
 - `Offers`: one negotiation or quote.
 - `OfferItems`: stickers included in each quote.
