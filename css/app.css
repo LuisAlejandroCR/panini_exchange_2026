@@ -298,8 +298,7 @@ button { font-family: inherit; cursor: pointer; }
 .sum-row        { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; font-size: 13px; }
 .sum-label      { color: var(--muted); }
 .sum-divider    { height: 1px; background: var(--border); margin: 8px 0; }
-.private-row    { opacity: .8; font-size: 12px; }
-.sum-margin-val { font-size: 12px; font-weight: 700; color: var(--gold); }
+.private-row { opacity: .8; font-size: 12px; }
 
 .sum-offer-val { font-size: 20px; font-weight: 800; color: var(--green-dark); }
 .sum-offer-val.floored { color: var(--amber); }

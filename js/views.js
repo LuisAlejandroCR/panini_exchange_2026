@@ -129,12 +129,8 @@ function refreshBundleUI() {
   offerEl.textContent = fmtFull(offer);
   offerEl.className   = 'sum-offer-val' + (floored ? ' floored' : '');
 
-  document.getElementById('sum-min').textContent = fmtFull(sumPriceLow);
-
-  const margin    = offer - sumPriceLow;
-  const marginPct = offer > 0 ? Math.round((margin / offer) * 100) : 0;
-  document.getElementById('sum-margin').textContent =
-    margin > 0 ? `${fmtFull(margin)} (${marginPct}% de bajada)` : 'Sin margen';
+  const floorNeg = Math.max(sumPriceLow, Math.round(offer * 0.90));
+  document.getElementById('sum-min').textContent = fmtFull(floorNeg);
 
   document.getElementById('floor-warning').classList.toggle('show', floored);
 }
