@@ -34,6 +34,8 @@
     --amber-light: #231800;
     --red-light:   #200a00;
   }
+  /* Offer price needs a bright green — dark brand green is near-invisible on dark card */
+  .sum-offer-val { color: #4ade80; }
 }
 
 /* ── Reset ──────────────────────────────────────────────────── */
@@ -113,8 +115,19 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 10px; font-weight: 700; text-transform: uppercase;
   letter-spacing: .6px; color: var(--muted); margin-bottom: 4px;
 }
-.req-col { color: #155724; font-weight: 600; }
-.opt-col { color: var(--muted); }
+.col-item {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 3px 0; border-bottom: 1px solid var(--border);
+}
+.col-item:last-of-type { border-bottom: none; }
+.col-name {
+  font-size: 11px; font-weight: 700; font-family: monospace;
+  flex-shrink: 0; min-width: 120px;
+}
+.col-item.req .col-name { color: var(--green-mid); }
+.col-item.opt .col-name { color: var(--muted); }
+.col-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+.col-alias { font-size: 10px; color: var(--muted); margin-top: 8px; font-style: italic; }
 
 /* ── App Shell ──────────────────────────────────────────────── */
 #app { height: 100dvh; display: flex; flex-direction: column; }
@@ -292,9 +305,11 @@ button { font-family: inherit; cursor: pointer; }
   background: var(--amber); color: #fff;
   font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 20px; letter-spacing: .3px;
 }
-.sum-row   { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; font-size: 13px; }
-.sum-label { color: var(--muted); }
-.sum-divider { height: 1px; background: var(--border); margin: 8px 0; }
+.sum-row        { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; font-size: 13px; }
+.sum-label      { color: var(--muted); }
+.sum-divider    { height: 1px; background: var(--border); margin: 8px 0; }
+.private-row    { opacity: .75; font-size: 12px; }
+.sum-margin-val { font-size: 12px; font-weight: 700; color: var(--gold); }
 
 .sum-offer-val { font-size: 20px; font-weight: 800; color: var(--green-dark); }
 .sum-offer-val.floored { color: var(--amber); }

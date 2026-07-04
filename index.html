@@ -31,12 +31,16 @@
 
   <div class="import-cols">
     <h4>Columnas requeridas</h4>
-    <div class="req-col">✓ sticker &nbsp;·&nbsp; price_low &nbsp;·&nbsp; publish_low</div>
-    <br>
-    <h4>Columnas opcionales</h4>
-    <div class="opt-col">id · category · price_high · publish_high · status · quantity · condition · notes</div>
-    <br>
-    <div class="opt-col" style="font-size:11px">También acepta nombres en español: lamina, vender_low, publicar_low, estado…</div>
+    <div class="col-item req"><span class="col-name">sticker</span><span class="col-desc">Nombre de la lámina — ej: ARG01 Messi</span></div>
+    <div class="col-item req"><span class="col-name">price_low</span><span class="col-desc">Precio mínimo que aceptas (tu costo)</span></div>
+    <div class="col-item req"><span class="col-name">publish_low</span><span class="col-desc">Precio que pides al comprador</span></div>
+    <h4 style="margin-top:10px">Columnas opcionales</h4>
+    <div class="col-item opt"><span class="col-name">category</span><span class="col-desc">Tipo: Jugador, Escudo, Especial…</span></div>
+    <div class="col-item opt"><span class="col-name">price_high</span><span class="col-desc">Precio máximo de venta</span></div>
+    <div class="col-item opt"><span class="col-name">publish_high</span><span class="col-desc">Precio publicado máximo (muestra rango)</span></div>
+    <div class="col-item opt"><span class="col-name">status</span><span class="col-desc">Available · Reserved · Sold</span></div>
+    <div class="col-item opt"><span class="col-name">quantity · condition · notes</span><span class="col-desc">Cantidad, estado físico, notas</span></div>
+    <div class="col-alias">También acepta español: lamina · vender_low · publicar_low · estado</div>
   </div>
 </div>
 
@@ -94,12 +98,16 @@
           </div>
           <div class="sum-divider"></div>
           <div class="sum-row" style="align-items:baseline">
-            <span style="font-weight:700;font-size:14px">Precio oferta</span>
+            <span style="font-weight:700;font-size:14px">Propón al comprador</span>
             <span class="sum-offer-val" id="sum-offer">—</span>
           </div>
-          <div class="sum-row">
-            <span class="sum-label">Precio mínimo</span>
+          <div class="sum-row private-row">
+            <span class="sum-label">🔒 Tu mínimo (solo tú)</span>
             <span class="sum-min-val" id="sum-min">—</span>
+          </div>
+          <div class="sum-row private-row">
+            <span class="sum-label">📊 Margen disponible</span>
+            <span class="sum-margin-val" id="sum-margin">—</span>
           </div>
           <div class="floor-warning" id="floor-warning">
             ⚠️ La oferta está en el precio mínimo (descuento superado)

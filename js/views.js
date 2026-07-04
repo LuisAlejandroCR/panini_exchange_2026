@@ -110,7 +110,7 @@ function refreshBundleUI() {
     el.className = 'bundle-item';
     el.innerHTML = `
       <span class="bi-name">${s.sticker}</span>
-      <span class="bi-price">${fmtShort(s.publish_low)}</span>
+      <span class="bi-price">${fmtFull(s.publish_low)}</span>
       <button class="bi-remove" onclick="onRemoveBundle('${s.id}')">✕</button>`;
     list.appendChild(el);
   }
@@ -130,6 +130,12 @@ function refreshBundleUI() {
   offerEl.className   = 'sum-offer-val' + (floored ? ' floored' : '');
 
   document.getElementById('sum-min').textContent = fmtFull(sumPriceLow);
+
+  const margin    = offer - sumPriceLow;
+  const marginPct = offer > 0 ? Math.round((margin / offer) * 100) : 0;
+  document.getElementById('sum-margin').textContent =
+    margin > 0 ? `${fmtFull(margin)} (${marginPct}% de bajada)` : 'Sin margen';
+
   document.getElementById('floor-warning').classList.toggle('show', floored);
 }
 
@@ -161,8 +167,8 @@ async function onCopyOffer() {
 
   const msg =
     `Estas ${count} láminas publicadas suman ${fmtFull(sumPubLow)}. ` +
-    `Te las dejo en ${fmtFull(offer)}. ` +
-    `Precio mínimo: ${fmtFull(sumPriceLow)}.`;
+    `¡Te las dejo en ${fmtFull(offer)}! ` +
+    `¿Le damos? 🤝`;
 
   const btn = document.getElementById('btn-wa');
   try {
