@@ -7,14 +7,14 @@
   --amber-light:  #fff3cd;
   --red:          #c0392b;
   --red-light:    #f8d7da;
-  --blue:         #0066cc;
+  --gold:         #b87800;
   --wa-green:     #25d366;
 
-  --bg:           #f0f2f5;
-  --card:         #ffffff;
-  --text:         #1a1a2e;
-  --muted:        #6c757d;
-  --border:       #dee2e6;
+  --bg:           #faf7f2;
+  --card:         #fffdf8;
+  --text:         #1c1208;
+  --muted:        #8a7a6a;
+  --border:       #e6ddd1;
 
   --header-h:     56px;
   --tabbar-h:     64px;
@@ -24,15 +24,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg:          #0e0e0e;
-    --card:        #1a1a1a;
-    --text:        #e8e8e8;
-    --muted:       #888;
-    --border:      #2a2a2a;
+    --bg:          #0f0c08;
+    --card:        #1e1810;
+    --text:        #f0e8d8;
+    --muted:       #9a8878;
+    --border:      #302518;
     --green-dark:  #2d6a4f;
     --green-light: #1a3025;
-    --amber-light: #2a1e00;
-    --red-light:   #2a0000;
+    --amber-light: #231800;
+    --red-light:   #200a00;
   }
 }
 
@@ -208,7 +208,7 @@ button { font-family: inherit; cursor: pointer; }
   display: flex; align-items: center; gap: 10px;
   border: 2px solid transparent; transition: border-color .15s;
 }
-.sticker-card.in-bundle { border-color: var(--blue); }
+.sticker-card.in-bundle { border-color: var(--gold); }
 .sticker-card.sold      { opacity: .5; }
 
 .card-info  { flex: 1; min-width: 0; }
@@ -223,12 +223,12 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 10px; font-weight: 700; padding: 2px 7px;
   border-radius: 10px; text-transform: uppercase; letter-spacing: .3px; flex-shrink: 0;
 }
-.cat-jugador  { background: #cfe2ff; color: #084298; }
-.cat-escudo   { background: #e0d7f5; color: #4a2d8a; }
+.cat-jugador  { background: #fdecc8; color: #7c4800; }
+.cat-escudo   { background: #ede0d4; color: #5c3220; }
 .cat-especial { background: #ffe0b2; color: #7c3100; }
-.cat-museum   { background: #ffd5c8; color: #7c1a00; }
+.cat-museum   { background: #fce4c8; color: #7c3800; }
 .cat-weare    { background: #c8e6c9; color: #1b5e20; }
-.cat-other    { background: #e9ecef; color: #495057; }
+.cat-other    { background: #ede8e0; color: #5a4f40; }
 
 .card-price { font-size: 11px; color: var(--muted); }
 .card-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
@@ -244,12 +244,12 @@ button { font-family: inherit; cursor: pointer; }
 
 .add-btn {
   width: 32px; height: 32px; border-radius: 50%;
-  border: 2px solid var(--blue); background: transparent; color: var(--blue);
+  border: 2px solid var(--gold); background: transparent; color: var(--gold);
   font-size: 20px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
   transition: all .15s; flex-shrink: 0; padding: 0; line-height: 1;
 }
-.add-btn.in-bundle { background: var(--blue); color: #fff; font-size: 15px; }
+.add-btn.in-bundle { background: var(--gold); color: #fff; font-size: 15px; }
 .add-btn:disabled  { border-color: var(--border); color: var(--border); }
 
 /* ── Bundle Tab ─────────────────────────────────────────────── */
