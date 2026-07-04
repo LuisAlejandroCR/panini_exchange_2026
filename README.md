@@ -13,31 +13,30 @@ Import your own collection, track availability, and generate WhatsApp offers in 
 3. Use the **Inventario** tab to manage sticker status
 4. Use the **Negociar** tab to build bundle offers and copy WhatsApp messages
 
-> **Tip:** Works offline — no server needed. Data is saved in your browser's localStorage.
+> Works offline — no server needed. Data is saved in your browser's localStorage.
 
 ---
 
 ## Your Inventory File
 
-Download the blank template from the import screen, fill it in, and import it.
+Download the blank template from the import screen. It is a CSV file with a description row explaining each column. Fill it in with your collection and drag it back into the app.
 
 ### Required columns
 
 | Column | Description |
 |--------|-------------|
-| `sticker` | Display name of the sticker / card |
-| `price_low` | Minimum price you will accept (floor) |
-| `publish_low` | Minimum listed / published price |
+| `sticker` | Sticker name — e.g. `ARG01 Messi` |
+| `price_low` | Minimum price you will accept (your cost floor) |
+| `publish_low` | Price you ask the buyer |
 
 ### Optional columns
 
 | Column | Description | Default |
 |--------|-------------|---------|
 | `id` | Unique identifier | Auto-generated |
-| `category` | Category label shown as a badge | — |
-| `type` | Sticker type (Normal, Holográfica, etc.) | — |
+| `category` | Badge label: Jugador, Escudo, Especial… | — |
 | `price_high` | Maximum selling price | 0 |
-| `publish_high` | Maximum listed price | 0 |
+| `publish_high` | Maximum listed price (shows a range) | 0 |
 | `status` | Initial status | `Available` |
 | `quantity` | Units in stock | 1 |
 | `condition` | Physical condition | — |
@@ -45,7 +44,7 @@ Download the blank template from the import screen, fill it in, and import it.
 
 **Status values:** `Available` · `Reserved` · `Sold`
 
-**Spanish column names are also accepted:** `lamina`, `vender_low`, `publicar_low`, `estado`, `cantidad`, `notas`, etc.
+**Spanish column names are also accepted:** `lamina` · `vender_low` · `publicar_low` · `estado` · `cantidad` · `notas`
 
 ---
 
@@ -53,67 +52,48 @@ Download the blank template from the import screen, fill it in, and import it.
 
 Select 2 or more stickers from Inventario and switch to the **Negociar** tab.
 
-| Stickers selected | Discount |
-|-------------------|----------|
+### Discount tiers
+
+| Stickers | Discount |
+|----------|----------|
 | 2 – 3 | 5% |
 | 4 – 6 | 10% |
-| 7+ | 15% |
+| 7+ | 12% |
 
-**Offer price** = `sum(publish_low) × (1 – discount)`, floored at `sum(price_low)`.
+### Pricing formula
+
+```
+offer  = MAX( ROUND(sum(publish_low) × (1 – discount)), sum(price_low) )
+floor  = MAX( sum(price_low), ROUND(offer × 0.93) )   ← shown privately as "No bajes de"
+```
+
+The **"No bajes de"** row is private — it shows the lowest you should accept in a counter-offer: your real cost total or 7% below the offer, whichever is higher. Maximum total exposure is ~19% off published on large bundles.
+
+### WhatsApp message
 
 Tap **"Copiar oferta WhatsApp"** to copy a ready-to-send message:
 
-> *"Estas 4 láminas publicadas suman $180.000. Te las dejo en $160.000. Precio mínimo: $135.000."*
+> *"Estas 3 láminas publicadas suman $179.900. ¡Te las dejo en $170.905! ¿Le damos? 🤝"*
 
-Tap **"Marcar todo como Reservado"** to update the status of all selected stickers at once.
+Your floor stays private — only the offer is shared.
+
+Tap **"Marcar todo como Reservado"** to reserve all selected stickers and clear the bundle.
+
+---
 
 ## File Structure
 
 ```
 panini_exchange_2026/
-├── index.html                                  # Web app (no dependencies)
-├── template/
-│   └── panini_exchange_2026_template.xlsx      # Blank template for your collection
-├── data/
-│   ├── laminas.csv                             # Sample inventory (64 stickers)
-│   ├── buyers.csv                              # Sample buyers
-│   ├── offers.csv                              # Sample offers
-│   ├── offer_items.csv                         # Sample offer line items
-│   └── settings_discount_rules.csv             # Discount tier configuration
+├── index.html        # App shell
+├── css/
+│   └── app.css       # Styles — vanilla/green light theme
+├── js/
+│   ├── parsers.js    # CSV and XLSX parsers (zero dependencies)
+│   ├── store.js      # State, localStorage, bundle and discount logic
+│   ├── views.js      # DOM rendering
+│   └── main.js       # Navigation, file import, template download
 └── README.md
-```
-
----
-
-## Data Columns Reference
-
-### `data/laminas.csv`
-`id · sticker · category · type · selection · price_low · price_high · publish_low · publish_high · status · quantity · condition · image_url · notes`
-
-### `data/buyers.csv`
-`id · name · whatsapp · city · notes`
-
-### `data/offers.csv`
-`id · buyer_id · date · status · notes · created_by`
-
-Offer status: `Draft` · `Sent` · `Accepted` · `Rejected` · `Paid`
-
-### `data/offer_items.csv`
-`id · offer_id · sticker_id · quantity · notes`
-
----
-
-## Bundle Pricing Formula
-
-```
-discount = 5%  if 2–3 stickers
-         = 10% if 4–6 stickers
-         = 15% if 7+  stickers
-
-offer = MAX(
-  ROUND(sum(publish_low) × (1 – discount)),
-  sum(price_low)   ← floor: never go below this
-)
 ```
 
 ---
