@@ -108,6 +108,34 @@ function downloadTemplate() {
   URL.revokeObjectURL(url);
 }
 
+// ── Export current state ──────────────────────────────────────
+function exportCurrentState() {
+  if (stickers.length === 0) return;
+  const headers = 'id,sticker,category,price_low,price_high,publish_low,publish_high,status,quantity,condition,notes';
+  const rows = stickers.map(s => [
+    s.id,
+    `"${(s.sticker   || '').replace(/"/g, '""')}"`,
+    `"${(s.category  || '').replace(/"/g, '""')}"`,
+    s.price_low   || '',
+    s.price_high  || '',
+    s.publish_low || '',
+    s.publish_high || '',
+    stickerState[s.id] || 'Available',
+    s.quantity  || 1,
+    `"${(s.condition || '').replace(/"/g, '""')}"`,
+    `"${(s.notes     || '').replace(/"/g, '""')}"`
+  ].join(','));
+  const csv  = [headers, ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const date = new Date().toISOString().slice(0, 10);
+  const a    = Object.assign(document.createElement('a'), {
+    href: url, download: `panini_exchange_${date}.csv`
+  });
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 // ── Init ──────────────────────────────────────────────────────
 loadStorage();
 wireDropZone();

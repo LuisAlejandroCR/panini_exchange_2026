@@ -74,7 +74,7 @@ function buildStickers(rows) {
 }
 
 // ── Status helpers ────────────────────────────────────────────
-const STATUS_CYCLE  = { Available: 'Reserved', Reserved: 'Sold', Sold: 'Available' };
+const STATUS_CYCLE  = { Available: 'Reserved', Reserved: 'Available', Sold: 'Available' };
 const STATUS_LABELS = { Available: 'Disponible', Reserved: 'Reservado', Sold: 'Vendido' };
 const STATUS_CLASS  = { Available: 's-available', Reserved: 's-reserved', Sold: 's-sold' };
 
@@ -83,6 +83,12 @@ function getStatus(id) { return stickerState[id] || 'Available'; }
 function cycleStatus(id) {
   stickerState[id] = STATUS_CYCLE[getStatus(id)];
   if (stickerState[id] === 'Sold') bundleSet.delete(id);
+  saveState();
+}
+
+function markAsSold(id) {
+  stickerState[id] = 'Sold';
+  bundleSet.delete(id);
   saveState();
 }
 

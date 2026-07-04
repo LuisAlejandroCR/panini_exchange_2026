@@ -38,10 +38,13 @@ function buildCard(s) {
     </div>
     <div class="card-actions">
       <button class="status-btn ${STATUS_CLASS[st]}"
-              onclick="onCycleStatus('${s.id}')">${STATUS_LABELS[st]}</button>
-      <button class="add-btn${inBundle ? ' in-bundle' : ''}"
-              onclick="onToggleBundle('${s.id}')"
-              ${isSold ? 'disabled' : ''}>${inBundle ? '✓' : '+'}</button>
+              onclick="onCycleStatus('${s.id}')">${st === 'Reserved' ? '↩ ' : ''}${STATUS_LABELS[st]}</button>
+      ${st === 'Reserved'
+        ? `<button class="add-btn sell-confirm" onclick="onMarkSold('${s.id}')">✓ Vender</button>`
+        : `<button class="add-btn${inBundle ? ' in-bundle' : ''}"
+                   onclick="onToggleBundle('${s.id}')"
+                   ${isSold ? 'disabled' : ''}>${inBundle ? '✓' : '+'}</button>`
+      }
     </div>`;
   return card;
 }
@@ -178,6 +181,13 @@ async function onCopyOffer() {
     btn.classList.remove('copied');
     btn.innerHTML = '📋&nbsp; Copiar oferta WhatsApp';
   }, 2500);
+}
+
+function onMarkSold(id) {
+  markAsSold(id);
+  refreshCard(id);
+  refreshChipCounts();
+  refreshBundleUI();
 }
 
 function onReserveBundle() {

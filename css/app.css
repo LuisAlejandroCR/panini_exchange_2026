@@ -132,6 +132,10 @@ button { font-family: inherit; cursor: pointer; }
   color: #fff; padding: 5px 12px; border-radius: 20px;
   font-size: 12px; font-weight: 600;
 }
+.btn-export {
+  background: transparent; border: none; color: #fff;
+  font-size: 20px; padding: 0 6px; line-height: 1; cursor: pointer;
+}
 
 /* ── Tab Bar ────────────────────────────────────────────────── */
 .tab-bar {
@@ -251,8 +255,13 @@ button { font-family: inherit; cursor: pointer; }
   display: flex; align-items: center; justify-content: center;
   transition: all .15s; flex-shrink: 0; padding: 0; line-height: 1;
 }
-.add-btn.in-bundle { background: var(--gold); color: #fff; font-size: 15px; }
-.add-btn:disabled  { border-color: var(--border); color: var(--border); }
+.add-btn.in-bundle  { background: var(--gold); color: #fff; font-size: 15px; }
+.add-btn:disabled   { border-color: var(--border); color: var(--border); }
+.add-btn.sell-confirm {
+  width: auto; padding: 0 10px; border-radius: 16px;
+  background: var(--green-dark); border-color: var(--green-dark);
+  color: #fff; font-size: 12px; font-weight: 700;
+}
 
 /* ── Bundle Tab ─────────────────────────────────────────────── */
 .bundle-empty {
