@@ -19,7 +19,7 @@ Manage inventory, create offers with 2+ stickers, apply automatic bundle discoun
 
 ## Quick start
 
-1. Upload `panini_exchange_2026_appsheet_template.xlsx` to Google Drive.
+1. Upload `appsheet_template.xlsx` to Google Drive.
 2. Open it with Google Sheets.
 3. Create an AppSheet app from the Google Sheet.
 4. Add all tabs as tables.
@@ -32,9 +32,9 @@ Manage inventory, create offers with 2+ stickers, apply automatic bundle discoun
 
 ## Bundle pricing logic
 
-- 2-3 láminas: 5% discount.
-- 4-6 láminas: 10% discount.
-- 7+ láminas: 15% discount.
+- 2-3 cards: 5% discount.
+- 4-6 cards: 10% discount.
+- 7+ cards: 15% discount.
 - The final offer never goes below the sum of `vender_low`.
 
 Formula idea:
