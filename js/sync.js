@@ -18,7 +18,8 @@ function syncBroadcastBundle() {
 }
 
 function syncBroadcastFull() {
-  _send({ t: 'f', stickers, states: stickerState, bundle: [...bundleSet] });
+  // bundle is intentionally excluded — each device keeps its own negotiation workspace
+  _send({ t: 'f', stickers, states: stickerState });
 }
 
 function _send(msg) {
@@ -33,11 +34,11 @@ function _apply(msg) {
       localStorage.setItem(SK.data, JSON.stringify(stickers));
     }
     Object.assign(stickerState, msg.states);
-    bundleSet = new Set(msg.bundle);
+    // bundle intentionally not applied — each device keeps its own negotiation workspace
     saveState();
     const onImport = !document.getElementById('import-screen').hidden;
     if (onImport) {
-      launchApp();        // auto-launch: guest skips the import screen
+      launchApp();
     } else {
       renderInventory();
       refreshChipCounts();
@@ -45,15 +46,10 @@ function _apply(msg) {
     }
   } else if (msg.t === 's') {
     stickerState[msg.id] = msg.st;
-    if (msg.st === 'Sold') bundleSet.delete(msg.id);
+    if (msg.st === 'Sold') bundleSet.delete(msg.id);  // remove from local bundle if sold remotely
     saveState();
     refreshCard(msg.id);
     refreshChipCounts();
-    refreshBundleUI();
-  } else if (msg.t === 'b') {
-    bundleSet = new Set(msg.ids);
-    saveState();
-    renderInventory();
     refreshBundleUI();
   }
 }

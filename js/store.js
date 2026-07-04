@@ -99,20 +99,24 @@ function toggleBundle(id) {
   if (getStatus(id) === 'Sold') return;
   bundleSet.has(id) ? bundleSet.delete(id) : bundleSet.add(id);
   saveState();
-  if (typeof syncBroadcastBundle === 'function') syncBroadcastBundle();
+  // bundle is local — not synced
 }
 
 function removeFromBundle(id) {
   bundleSet.delete(id);
   saveState();
-  if (typeof syncBroadcastBundle === 'function') syncBroadcastBundle();
+  // bundle is local — not synced
 }
 
 function reserveBundle() {
-  for (const id of bundleSet) stickerState[id] = 'Reserved';
+  const ids = [...bundleSet];
+  for (const id of ids) stickerState[id] = 'Reserved';
   bundleSet.clear();
   saveState();
-  if (typeof syncBroadcastFull === 'function') syncBroadcastFull();
+  // broadcast each status change so the other device sees items as Reserved
+  if (typeof syncBroadcastStatus === 'function') {
+    for (const id of ids) syncBroadcastStatus(id, 'Reserved');
+  }
 }
 
 // ── Discount logic ────────────────────────────────────────────

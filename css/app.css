@@ -184,16 +184,16 @@ button { font-family: inherit; cursor: pointer; }
   border-radius: var(--radius); font-size: 15px; font-weight: 600;
 }
 .sync-divider { text-align: center; font-size: 12px; color: var(--muted); margin: 12px 0; }
-.sync-join-row  { display: flex; gap: 8px; }
+.sync-join-row  { display: flex; flex-direction: column; gap: 10px; }
 .sync-code-input {
-  flex: 1; border: 2px solid var(--border); border-radius: var(--radius-sm);
-  padding: 10px 12px; font-size: 20px; font-weight: 700;
-  text-align: center; letter-spacing: 5px; color: var(--text);
+  width: 100%; border: 2px solid var(--border); border-radius: var(--radius-sm);
+  padding: 12px; font-size: 22px; font-weight: 700;
+  text-align: center; letter-spacing: 6px; color: var(--text);
   background: var(--bg); text-transform: uppercase;
 }
 .btn-sync-join {
-  padding: 10px 16px; background: var(--green-mid); color: #fff;
-  border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
+  width: 100%; padding: 13px; background: var(--green-mid); color: #fff;
+  border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
 }
 .sync-code-display {
   font-size: 44px; font-weight: 800; letter-spacing: 10px; text-align: center;
