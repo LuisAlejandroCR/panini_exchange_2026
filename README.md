@@ -67,20 +67,6 @@ Tap **"Copiar oferta WhatsApp"** to copy a ready-to-send message:
 
 Tap **"Marcar todo como Reservado"** to update the status of all selected stickers at once.
 
----
-
-## AppSheet Integration
-
-Use the provided Excel template (`template/panini_exchange_2026_template.xlsx`) to manage your collection in Google AppSheet:
-
-1. Upload the template to **Google Drive**
-2. Open as **Google Sheets** (File → Open with → Google Sheets)
-3. Go to [appsheet.com](https://www.appsheet.com) → **New App → From your own data**
-4. Connect your Google Sheet
-5. Configure virtual columns using the expressions in `data/settings_discount_rules.csv`
-
----
-
 ## File Structure
 
 ```
