@@ -98,11 +98,12 @@ function wireDropZone() {
 // ── Template download ─────────────────────────────────────────
 function downloadTemplate() {
   const headers  = 'id,sticker,category,price_low,price_high,publish_low,publish_high,status,quantity,condition,notes';
+  const desc     = '# (opcional),(requerido) nombre de la lámina ej: ARG01 Messi,Jugador / Escudo / Especial,(requerido) tu costo mínimo aceptable,precio máximo de venta (opcional),,(requerido) precio que publicas al comprador,precio publicado máximo (opcional),Available / Reserved / Sold,cuántas tienes,estado físico,notas libres';
   const example1 = 'S1,ARG01 Messi,Jugador,3000,5000,10000,15000,Available,1,,';
   const example2 = 'S2,BRA07 Vinicius,Jugador,2000,3000,8000,12000,Available,1,,';
-  const blob = new Blob([[headers, example1, example2].join('\n')], { type: 'text/csv' });
+  const blob = new Blob([[headers, desc, example1, example2].join('\n')], { type: 'text/csv' });
   const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement('a'), { href: url, download: 'panini_exchange_2026_template.csv' });
+  const a    = Object.assign(document.createElement('a'), { href: url, download: 'panini_exchange_template.csv' });
   a.click();
   URL.revokeObjectURL(url);
 }
