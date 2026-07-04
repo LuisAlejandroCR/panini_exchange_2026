@@ -8,7 +8,7 @@ Import your own collection, track availability, and generate WhatsApp offers in 
 
 ## Quick Start
 
-1. **Open `index.html`** in any modern mobile browser (Chrome, Safari, Firefox)
+1. **Open `(https://panini-exchange-2026.vercel.app/)`** in mobile browser
 2. **Import your file** — drag and drop your CSV or Excel file
 3. Use the **Inventario** tab to manage sticker status
 4. Use the **Negociar** tab to build bundle offers and copy WhatsApp messages
