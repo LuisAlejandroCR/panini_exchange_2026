@@ -2,9 +2,10 @@
 const SK = { data: 'panini_data', states: 'panini_states', bundle: 'panini_bundle' };
 
 // ── App state ─────────────────────────────────────────────────
-let stickers     = [];
-let stickerState = {};   // { id: 'Available'|'Reserved'|'Sold' }
-let bundleSet    = new Set();
+let stickers        = [];
+let stickerState    = {};        // { id: 'Available'|'Reserved'|'Sold' }
+let bundleSet       = new Set(); // local negotiation workspace
+let remoteBundleSet = new Set(); // stickers locked by the other device
 
 // ── Persistence ───────────────────────────────────────────────
 function saveState() {
@@ -97,15 +98,16 @@ function markAsSold(id) {
 // ── Bundle helpers ────────────────────────────────────────────
 function toggleBundle(id) {
   if (getStatus(id) === 'Sold') return;
+  if (remoteBundleSet.has(id) && !bundleSet.has(id)) return; // locked by another device
   bundleSet.has(id) ? bundleSet.delete(id) : bundleSet.add(id);
   saveState();
-  // bundle is local — not synced
+  if (typeof syncBroadcastLock === 'function') syncBroadcastLock();
 }
 
 function removeFromBundle(id) {
   bundleSet.delete(id);
   saveState();
-  // bundle is local — not synced
+  if (typeof syncBroadcastLock === 'function') syncBroadcastLock();
 }
 
 function reserveBundle() {
@@ -113,10 +115,10 @@ function reserveBundle() {
   for (const id of ids) stickerState[id] = 'Reserved';
   bundleSet.clear();
   saveState();
-  // broadcast each status change so the other device sees items as Reserved
   if (typeof syncBroadcastStatus === 'function') {
     for (const id of ids) syncBroadcastStatus(id, 'Reserved');
   }
+  if (typeof syncBroadcastLock === 'function') syncBroadcastLock(); // release locks
 }
 
 // ── Discount logic ────────────────────────────────────────────

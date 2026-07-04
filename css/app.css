@@ -292,7 +292,16 @@ button { font-family: inherit; cursor: pointer; }
   box-shadow: 0 1px 3px rgba(0,0,0,.06);
 }
 .sticker-card.in-bundle { border-color: var(--gold); }
-.sticker-card.sold      { opacity: .5; }
+.sticker-card.sold          { opacity: .5; }
+.sticker-card.remote-locked { border-left: 3px solid var(--amber); opacity: .75; }
+.locked-badge {
+  font-size: 10px; color: var(--amber); font-weight: 600;
+  background: var(--amber-light); border-radius: 4px; padding: 1px 5px;
+}
+.add-btn-locked {
+  border-color: var(--amber); color: var(--amber);
+  font-size: 14px; cursor: not-allowed; opacity: .8;
+}
 
 .card-info  { flex: 1; min-width: 0; }
 .card-name  {

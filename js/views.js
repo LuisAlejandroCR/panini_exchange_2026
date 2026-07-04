@@ -14,12 +14,13 @@ function renderInventory() {
 }
 
 function buildCard(s) {
-  const st       = getStatus(s.id);
-  const inBundle = bundleSet.has(s.id);
-  const isSold   = st === 'Sold';
+  const st         = getStatus(s.id);
+  const inBundle   = bundleSet.has(s.id);
+  const isSold     = st === 'Sold';
+  const isLocked   = remoteBundleSet.has(s.id) && !inBundle; // in another device's negotiation
 
   const card = document.createElement('div');
-  card.className = `sticker-card${inBundle ? ' in-bundle' : ''}${isSold ? ' sold' : ''}`;
+  card.className = `sticker-card${inBundle ? ' in-bundle' : ''}${isSold ? ' sold' : ''}${isLocked ? ' remote-locked' : ''}`;
   card.dataset.id     = s.id;
   card.dataset.status = st;
   card.dataset.search = s.sticker.toLowerCase();
@@ -28,23 +29,30 @@ function buildCard(s) {
     ? `Pub ${fmtShort(s.publish_low)}–${fmtShort(s.publish_high)}`
     : `Pub ${fmtShort(s.publish_low)}`;
 
+  let actionBtn;
+  if (isLocked) {
+    actionBtn = `<button class="add-btn add-btn-locked" disabled title="En negociación por otro usuario">🤝</button>`;
+  } else if (st === 'Reserved') {
+    actionBtn = `<button class="add-btn sell-confirm" onclick="onMarkSold('${s.id}')">✓ Vender</button>`;
+  } else {
+    actionBtn = `<button class="add-btn${inBundle ? ' in-bundle' : ''}"
+                         onclick="onToggleBundle('${s.id}')"
+                         ${isSold ? 'disabled' : ''}>${inBundle ? '✓' : '+'}</button>`;
+  }
+
   card.innerHTML = `
     <div class="card-info">
       <span class="card-name">${s.sticker}</span>
       <div class="card-meta">
         ${s.category ? `<span class="cat-badge ${catClass(s.category)}">${s.category}</span>` : ''}
         <span class="card-price">${pubTxt} &middot; Mín ${fmtShort(s.price_low)}</span>
+        ${isLocked ? `<span class="locked-badge">🤝 En negociación</span>` : ''}
       </div>
     </div>
     <div class="card-actions">
       <button class="status-btn ${STATUS_CLASS[st]}"
               onclick="onCycleStatus('${s.id}')">${st === 'Reserved' ? '↩ ' : ''}${STATUS_LABELS[st]}</button>
-      ${st === 'Reserved'
-        ? `<button class="add-btn sell-confirm" onclick="onMarkSold('${s.id}')">✓ Vender</button>`
-        : `<button class="add-btn${inBundle ? ' in-bundle' : ''}"
-                   onclick="onToggleBundle('${s.id}')"
-                   ${isSold ? 'disabled' : ''}>${inBundle ? '✓' : '+'}</button>`
-      }
+      ${actionBtn}
     </div>`;
   return card;
 }

@@ -22,6 +22,10 @@ function syncBroadcastFull() {
   _send({ t: 'f', stickers, states: stickerState });
 }
 
+function syncBroadcastLock() {
+  _send({ t: 'lock', ids: [...bundleSet] });
+}
+
 function _send(msg) {
   if (_conn && _conn.open) _conn.send(msg);
 }
@@ -46,11 +50,18 @@ function _apply(msg) {
     }
   } else if (msg.t === 's') {
     stickerState[msg.id] = msg.st;
-    if (msg.st === 'Sold') bundleSet.delete(msg.id);  // remove from local bundle if sold remotely
+    if (msg.st === 'Sold') bundleSet.delete(msg.id); // remove from local bundle if sold remotely
+    remoteBundleSet.delete(msg.id);                  // release remote lock when status finalised
     saveState();
     refreshCard(msg.id);
     refreshChipCounts();
     refreshBundleUI();
+  } else if (msg.t === 'lock') {
+    const prev = remoteBundleSet;
+    remoteBundleSet = new Set(msg.ids);
+    // refresh cards that changed lock state
+    const changed = new Set([...prev, ...remoteBundleSet]);
+    changed.forEach(id => refreshCard(id));
   }
 }
 
@@ -66,7 +77,7 @@ function syncCreateSession() {
   });
   _peer.on('connection', c => {
     _conn = c;
-    c.on('open',  () => { syncBroadcastFull(); _showConnected('Dispositivo conectado'); });
+    c.on('open',  () => { syncBroadcastFull(); syncBroadcastLock(); _showConnected('Dispositivo conectado'); });
     c.on('data',  _apply);
     c.on('close', _onDisconnect);
     c.on('error', _onDisconnect);
@@ -81,7 +92,7 @@ function syncJoinSession(code) {
 
   _peer.on('open', () => {
     _conn = _peer.connect(SYNC_PREFIX + code.trim().toUpperCase());
-    _conn.on('open',  () => _showConnected('Conectado al anfitrión'));
+    _conn.on('open',  () => { syncBroadcastLock(); _showConnected('Conectado al anfitrión'); });
     _conn.on('data',  _apply);
     _conn.on('close', _onDisconnect);
     _conn.on('error', () => _showError('Código no encontrado o sesión expirada.'));
@@ -98,6 +109,9 @@ function syncDisconnect() {
 
 function _onDisconnect() {
   _conn = null;
+  // release all remote negotiation locks
+  remoteBundleSet = new Set();
+  renderInventory();
   _setState('sync-idle');
   const btn = document.getElementById('btn-sync');
   if (btn) btn.classList.remove('sync-active');
