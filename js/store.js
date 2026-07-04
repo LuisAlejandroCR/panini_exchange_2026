@@ -84,12 +84,14 @@ function cycleStatus(id) {
   stickerState[id] = STATUS_CYCLE[getStatus(id)];
   if (stickerState[id] === 'Sold') bundleSet.delete(id);
   saveState();
+  if (typeof syncBroadcastStatus === 'function') syncBroadcastStatus(id, stickerState[id]);
 }
 
 function markAsSold(id) {
   stickerState[id] = 'Sold';
   bundleSet.delete(id);
   saveState();
+  if (typeof syncBroadcastStatus === 'function') syncBroadcastStatus(id, 'Sold');
 }
 
 // ── Bundle helpers ────────────────────────────────────────────
@@ -97,14 +99,20 @@ function toggleBundle(id) {
   if (getStatus(id) === 'Sold') return;
   bundleSet.has(id) ? bundleSet.delete(id) : bundleSet.add(id);
   saveState();
+  if (typeof syncBroadcastBundle === 'function') syncBroadcastBundle();
 }
 
-function removeFromBundle(id) { bundleSet.delete(id); saveState(); }
+function removeFromBundle(id) {
+  bundleSet.delete(id);
+  saveState();
+  if (typeof syncBroadcastBundle === 'function') syncBroadcastBundle();
+}
 
 function reserveBundle() {
   for (const id of bundleSet) stickerState[id] = 'Reserved';
   bundleSet.clear();
   saveState();
+  if (typeof syncBroadcastFull === 'function') syncBroadcastFull();
 }
 
 // ── Discount logic ────────────────────────────────────────────

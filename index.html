@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#1a472a">
   <title>Panini Exchange 2026</title>
   <link rel="stylesheet" href="css/app.css">
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 </head>
 <body>
 
@@ -50,6 +51,7 @@
   <header class="app-header">
     <span class="app-header-emoji">⚽</span>
     <span class="app-header-title">Panini Exchange 2026</span>
+    <button class="btn-sync" id="btn-sync" onclick="openSyncPanel()" title="Sincronizar en tiempo real">🔗</button>
     <button class="btn-export" onclick="exportCurrentState()" title="Exportar estado actual">📤</button>
     <button class="btn-reimport" onclick="confirmReset()">Importar</button>
   </header>
@@ -136,12 +138,59 @@
     </button>
   </nav>
 
+  <!-- ── Sync overlay + panel ── -->
+  <div class="sync-overlay" id="sync-overlay" hidden onclick="closeSyncPanel()"></div>
+  <div class="sync-panel" id="sync-panel" hidden>
+    <div class="sync-panel-header">
+      <span class="sync-panel-title">🔗 Sesión en tiempo real</span>
+      <button class="sync-close-btn" onclick="closeSyncPanel()">✕</button>
+    </div>
+
+    <!-- Idle -->
+    <div id="sync-idle">
+      <p class="sync-hint">Conecta dos dispositivos sin cuenta ni nube.<br>Los cambios se sincronizan al instante vía P2P.</p>
+      <button class="btn-sync-create" onclick="syncCreateSession()">📡 Crear sesión</button>
+      <div class="sync-divider">— o únete a una sesión existente —</div>
+      <div class="sync-join-row">
+        <input class="sync-code-input" id="sync-join-input" type="text"
+               maxlength="6" placeholder="CÓDIGO" autocomplete="off"
+               oninput="this.value=this.value.toUpperCase()">
+        <button class="btn-sync-join"
+                onclick="syncJoinSession(document.getElementById('sync-join-input').value)">Unirse</button>
+      </div>
+    </div>
+
+    <!-- Hosting / joining -->
+    <div id="sync-hosting" hidden>
+      <p class="sync-hint">Comparte este código con el otro dispositivo:</p>
+      <div class="sync-code-display" id="sync-code-val">——</div>
+      <button class="btn-sync-copy" id="sync-copy-btn" onclick="syncCopyCode()">📋 Copiar código</button>
+      <p class="sync-status-msg" id="sync-status-msg">Esperando conexión…</p>
+    </div>
+
+    <!-- Connected -->
+    <div id="sync-connected" hidden>
+      <div class="sync-state-icon">✅</div>
+      <p class="sync-connected-msg" id="sync-connected-msg">Conectado</p>
+      <p class="sync-hint">Los cambios se sincronizan en tiempo real.<br>Mantén la app abierta en ambos dispositivos.</p>
+      <button class="btn-sync-disconnect" onclick="syncDisconnect()">Desconectar</button>
+    </div>
+
+    <!-- Error -->
+    <div id="sync-error" hidden>
+      <div class="sync-state-icon">⚠️</div>
+      <p class="sync-error-msg" id="sync-error-msg">Error de conexión</p>
+      <button class="btn-sync-create" onclick="syncRetry()">Intentar de nuevo</button>
+    </div>
+  </div>
+
 </div><!-- #app -->
 
-<!-- Load order matters: parsers → store → views → main -->
+<!-- Load order: parsers → store → views → sync → main -->
 <script src="js/parsers.js"></script>
 <script src="js/store.js"></script>
 <script src="js/views.js"></script>
+<script src="js/sync.js"></script>
 <script src="js/main.js"></script>
 
 </body>
