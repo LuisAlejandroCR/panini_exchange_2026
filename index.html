@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#1a472a">
+  <title>Panini Exchange 2026</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- ═══════════════════ IMPORT SCREEN ═══════════════════ -->
+<div id="import-screen">
+  <div class="import-hero">⚽</div>
+  <h1 class="import-title">Panini Exchange 2026</h1>
+  <p class="import-sub">Importa tu archivo para comenzar a gestionar tu inventario</p>
+
+  <div class="drop-zone" id="drop-zone">
+    <input type="file" id="file-input" accept=".csv,.xlsx,.xls">
+    <div class="dz-icon">📂</div>
+    <div class="dz-label">Arrastra tu archivo aquí</div>
+    <div class="dz-hint">o toca para elegir · CSV o Excel (.xlsx)</div>
+  </div>
+
+  <div class="import-error" id="import-error"></div>
+
+  <a href="template/panini_exchange_2026_template.xlsx" download class="btn-primary">
+    ⬇️&nbsp; Descargar plantilla Excel
+  </a>
+
+  <div class="import-cols">
+    <h4>Columnas requeridas</h4>
+    <div class="req-col">✓ sticker &nbsp;·&nbsp; price_low &nbsp;·&nbsp; publish_low</div>
+    <br>
+    <h4>Columnas opcionales</h4>
+    <div class="opt-col">id · category · price_high · publish_high · status · quantity · condition · notes</div>
+    <br>
+    <div class="opt-col" style="font-size:11px">También acepta nombres en español: lamina, vender_low, publicar_low, estado…</div>
+  </div>
+</div>
+
+<!-- ═══════════════════ MAIN APP ═══════════════════ -->
+<div id="app" hidden>
+
+  <header class="app-header">
+    <span class="app-header-emoji">⚽</span>
+    <span class="app-header-title">Panini Exchange 2026</span>
+    <button class="btn-reimport" onclick="confirmReset()">Importar</button>
+  </header>
+
+  <div class="content-area">
+
+    <!-- ── Inventario ── -->
+    <section class="tab-pane active" id="pane-inventory">
+      <div class="inv-toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" type="text" id="search-input"
+                 placeholder="Buscar lámina…" autocomplete="off" oninput="applyFilters()">
+        </div>
+        <div class="chips">
+          <button class="chip active" data-filter="all"       onclick="setFilter('all')">Todo</button>
+          <button class="chip"        data-filter="Available" onclick="setFilter('Available')">Disponible</button>
+          <button class="chip"        data-filter="Reserved"  onclick="setFilter('Reserved')">Reservado</button>
+          <button class="chip"        data-filter="Sold"      onclick="setFilter('Sold')">Vendido</button>
+        </div>
+      </div>
+      <div id="sticker-list">
+        <div class="no-results" id="no-results">Sin resultados</div>
+      </div>
+    </section>
+
+    <!-- ── Negociar ── -->
+    <section class="tab-pane" id="pane-bundle">
+
+      <div class="bundle-empty" id="bundle-empty">
+        <div class="bundle-empty-icon">🃏</div>
+        <div class="bundle-empty-title">Sin láminas en el paquete</div>
+        <div class="bundle-empty-hint">Agrega láminas disponibles desde la pestaña Inventario&nbsp;➡️</div>
+      </div>
+
+      <div class="bundle-filled" id="bundle-filled" hidden>
+        <div id="bundle-list"></div>
+
+        <div class="bundle-summary">
+          <div class="sum-header">
+            <span class="sum-count" id="sum-count">0 láminas</span>
+            <span class="discount-pill" id="discount-pill">Sin descuento</span>
+          </div>
+          <div class="sum-row">
+            <span class="sum-label">Publicado</span>
+            <span id="sum-pub">—</span>
+          </div>
+          <div class="sum-divider"></div>
+          <div class="sum-row" style="align-items:baseline">
+            <span style="font-weight:700;font-size:14px">Precio oferta</span>
+            <span class="sum-offer-val" id="sum-offer">—</span>
+          </div>
+          <div class="sum-row">
+            <span class="sum-label">Precio mínimo</span>
+            <span class="sum-min-val" id="sum-min">—</span>
+          </div>
+          <div class="floor-warning" id="floor-warning">
+            ⚠️ La oferta está en el precio mínimo (descuento superado)
+          </div>
+        </div>
+
+        <div class="bundle-actions">
+          <button class="btn-wa" id="btn-wa" onclick="onCopyOffer()">
+            📋&nbsp; Copiar oferta WhatsApp
+          </button>
+          <button class="btn-reserve" onclick="onReserveBundle()">
+            🕐&nbsp; Marcar todo como Reservado
+          </button>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <nav class="tab-bar">
+    <button class="tab-btn active" id="tab-inventory" onclick="switchTab('inventory')">
+      <span class="tab-icon">📋</span>
+      <span>Inventario</span>
+    </button>
+    <button class="tab-btn" id="tab-bundle" onclick="switchTab('bundle')">
+      <span class="tab-icon">💰</span>
+      <span>Negociar</span>
+      <span class="tab-badge" id="bundle-badge" data-count="0"></span>
+    </button>
+  </nav>
+
+</div><!-- #app -->
+
+<!-- Load order matters: parsers → store → views → main -->
+<script src="js/parsers.js"></script>
+<script src="js/store.js"></script>
+<script src="js/views.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>

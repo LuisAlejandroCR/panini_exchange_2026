@@ -2,10 +2,10 @@
 
 ## Inputs
 
-- `publicar_low`: low public asking price.
-- `publicar_high`: high public asking price.
-- `vender_low`: lowest acceptable price.
-- `vender_high`: faster-sale high range.
+- `publish_low`: low public asking price.
+- `publish_high`: high public asking price.
+- `price_low`: lowest acceptable price.
+- `price_high`: faster-sale high range.
 
 ## Discounts
 
@@ -17,10 +17,10 @@
 
 ## Rule
 
-Use the discounted `publicar_low` as the offer, but never go below the sum of `vender_low`.
+Use the discounted `publish_low` as the offer, but never go below the sum of `price_low`.
 
 ```text
-candidate_offer = publicar_total_low * (1 - discount_pct)
+candidate_offer = publish_total_low * (1 - discount_pct)
 final_offer = max(seller_min, rounded_candidate_offer)
 ```
 

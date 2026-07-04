@@ -2,7 +2,7 @@
 
 ## 1. Data source
 
-Use `panini_exchange_2026_appsheet_template.xlsx` as your source file. Upload it to Google Drive and open it as Google Sheets.
+Use `appsheet_template.xlsx` as your source file. Upload it to Google Drive and open it as Google Sheets.
 
 Recommended AppSheet tables:
 
@@ -32,22 +32,22 @@ Add these virtual columns.
 
 ### OfferItems
 
-`V_PublicarLow`
+`V_PublishLow`
 
 ```appsheet
-[LaminaID].[publicar_low] * [qty]
+[LaminaID].[Publish_low] * [qty]
 ```
 
-`V_PublicarHigh`
+`V_PublishHigh`
 
 ```appsheet
-[LaminaID].[publicar_high] * [qty]
+[LaminaID].[Publish_high] * [qty]
 ```
 
-`V_VenderLow`
+`V_priceLow`
 
 ```appsheet
-[LaminaID].[vender_low] * [qty]
+[LaminaID].[price_low] * [qty]
 ```
 
 ### Offers
@@ -69,22 +69,22 @@ IFS(
 )
 ```
 
-`V_PublicarTotalLow`
+`V_PublishTotalLow`
 
 ```appsheet
-SUM([Related OfferItems][V_PublicarLow])
+SUM([Related OfferItems][V_PublishLow])
 ```
 
-`V_PublicarTotalHigh`
+`V_PublishTotalHigh`
 
 ```appsheet
-SUM([Related OfferItems][V_PublicarHigh])
+SUM([Related OfferItems][V_PublishHigh])
 ```
 
 `V_SellerMin`
 
 ```appsheet
-SUM([Related OfferItems][V_VenderLow])
+SUM([Related OfferItems][V_priceLow])
 ```
 
 `V_FinalOffer`
@@ -93,7 +93,7 @@ SUM([Related OfferItems][V_VenderLow])
 MAX(
   LIST(
     [V_SellerMin],
-    ROUND([V_PublicarTotalLow] * (1 - [V_DiscountPct]))
+    ROUND([V_PublishTotalLow] * (1 - [V_DiscountPct]))
   )
 )
 ```
@@ -108,7 +108,7 @@ CONCATENATE(
   ENCODEURL(
     CONCATENATE(
       "Hola ", [BuyerID].[nombre],
-      ", estas láminas suman $", TEXT([V_PublicarTotalLow]),
+      ", estas láminas suman $", TEXT([V_PublishTotalLow]),
       ". Te las dejo en $", TEXT([V_FinalOffer]),
       ". Precio mínimo: $", TEXT([V_SellerMin]),
       "."
