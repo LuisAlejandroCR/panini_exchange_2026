@@ -1,0 +1,4 @@
+discount_rule_id,min_items,max_items,discount_pct,label
+DISC-01,2,3,0.05,2-3 láminas
+DISC-02,4,6,0.1,4-6 láminas
+DISC-03,7,999,0.15,7+ láminas

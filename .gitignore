@@ -1,0 +1,10 @@
+# Local files
+.DS_Store
+*.tmp
+*.bak
+
+# Excel temp files
+~$*.xlsx
+
+# AppSheet exports
+appsheet_export/

@@ -1,0 +1,12 @@
+Table,Column / Action,AppSheet expression / configuration
+OfferItems,V_PublicarLow,[LaminaID].[publicar_low] * [qty]
+OfferItems,V_PublicarHigh,[LaminaID].[publicar_high] * [qty]
+OfferItems,V_VenderLow,[LaminaID].[vender_low] * [qty]
+Offers,V_ItemCount,SUM([Related OfferItems][qty])
+Offers,V_DiscountPct,"IFS([V_ItemCount] >= 7, 0.15, [V_ItemCount] >= 4, 0.10, [V_ItemCount] >= 2, 0.05, TRUE, 0)"
+Offers,V_PublicarTotalLow,SUM([Related OfferItems][V_PublicarLow])
+Offers,V_PublicarTotalHigh,SUM([Related OfferItems][V_PublicarHigh])
+Offers,V_SellerMin,SUM([Related OfferItems][V_VenderLow])
+Offers,V_FinalOffer,"MAX(LIST([V_SellerMin], ROUND([V_PublicarTotalLow] * (1 - [V_DiscountPct]))))"
+Offers,V_WhatsAppURL,"CONCATENATE(""https://wa.me/"", SUBSTITUTE([BuyerID].[whatsapp], ""+"", """"), ""?text="", ENCODEURL(CONCATENATE(""Hola "", [BuyerID].[nombre], "", estas láminas suman $"", TEXT([V_PublicarTotalLow]), "". Te las dejo en $"", TEXT([V_FinalOffer]), "". Precio mínimo: $"", TEXT([V_SellerMin]), ""."")))"
+Action,Send WhatsApp Offer,Type: External: go to a website. Target: [V_WhatsAppURL]. Launch External: ON.

@@ -1,0 +1,6 @@
+View,Table,Type,Position,Purpose
+Inventario,Laminas,Deck / Table,Primary,Buscar y filtrar láminas
+Ofertas,Offers,Deck / Table,Primary,Crear y revisar ofertas
+Nueva Oferta,Offers,Form,Primary or menu,Registrar comprador y estado
+Detalle Oferta,Offers,Detail,Other,Ver totales y botón de WhatsApp
+Compradores,Buyers,Table,Menu,Guardar datos de compradores

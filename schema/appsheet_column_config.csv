@@ -1,0 +1,26 @@
+table,column,type,key,label,ref_table,editable,initial_value_or_app_formula
+Laminas,LaminaID,Text,Y,N,,N,UNIQUEID()
+Laminas,lamina,Name/Text,N,Y,,Y,
+Laminas,categoria,Enum,N,N,,Y,"Jugador, Escudo, Especial, FIFA Museum, WE ARE"
+Laminas,tipo,Enum,N,N,,Y,"Normal, Holográfica, Extra Sticker"
+Laminas,seleccion,Text,N,N,,Y,
+Laminas,vender_low,Price,N,N,,Y,
+Laminas,vender_high,Price,N,N,,Y,
+Laminas,publicar_low,Price,N,N,,Y,
+Laminas,publicar_high,Price,N,N,,Y,
+Laminas,estado,Enum,N,N,,Y,"Available, Reserved, Sold"
+Laminas,cantidad,Number,N,N,,Y,1
+Laminas,condition,Enum,N,N,,Y,"Mint, Near mint, Used"
+Laminas,image_url,Image,N,N,,Y,
+Buyers,BuyerID,Text,Y,N,,N,UNIQUEID()
+Buyers,nombre,Name,N,Y,,Y,
+Buyers,whatsapp,Phone,N,N,,Y,
+Buyers,ciudad,Text,N,N,,Y,
+Offers,OfferID,Text,Y,N,,N,UNIQUEID()
+Offers,BuyerID,Ref,N,Y,Buyers,Y,
+Offers,OfferDate,Date,N,N,,Y,TODAY()
+Offers,status,Enum,N,N,,Y,"Draft, Sent, Accepted, Rejected, Paid"
+OfferItems,OfferItemID,Text,Y,N,,N,UNIQUEID()
+OfferItems,OfferID,Ref,N,N,Offers,Y,
+OfferItems,LaminaID,Ref,N,Y,Laminas,Y,
+OfferItems,qty,Number,N,N,,Y,1
