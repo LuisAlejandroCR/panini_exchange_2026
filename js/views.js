@@ -129,7 +129,7 @@ function refreshBundleUI() {
   offerEl.textContent = fmtFull(offer);
   offerEl.className   = 'sum-offer-val' + (floored ? ' floored' : '');
 
-  const floorNeg = Math.max(sumPriceLow, Math.round(offer * 0.90));
+  const floorNeg = Math.max(sumPriceLow, Math.round(offer * 0.93));
   document.getElementById('sum-min').textContent = fmtFull(floorNeg);
 
   document.getElementById('floor-warning').classList.toggle('show', floored);

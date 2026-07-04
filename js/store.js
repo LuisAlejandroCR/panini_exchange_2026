@@ -103,7 +103,7 @@ function reserveBundle() {
 
 // ── Discount logic ────────────────────────────────────────────
 function getDiscount(n) {
-  if (n >= 7) return 0.15;
+  if (n >= 7) return 0.12;
   if (n >= 4) return 0.10;
   if (n >= 2) return 0.05;
   return 0;
