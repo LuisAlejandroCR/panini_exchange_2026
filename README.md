@@ -48,19 +48,4 @@ MAX(
 )
 ```
 
-## GitHub remote setup
 
-After unzipping this repo locally:
-
-```bash
-cd panini_exchange_2026
-git remote add origin https://github.com/LuisAlejandroCR/panini_exchange_2026.git
-git branch -M main
-git push -u origin main
-```
-
-If the GitHub repo does not exist yet, create it first in GitHub or with GitHub CLI:
-
-```bash
-gh repo create LuisAlejandroCR/panini_exchange_2026 --public --source=. --remote=origin --push
-```
