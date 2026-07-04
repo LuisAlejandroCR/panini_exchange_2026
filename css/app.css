@@ -84,6 +84,14 @@ button { font-family: inherit; cursor: pointer; }
   transition: background .2s;
 }
 .btn-primary:hover { background: var(--green-mid); }
+.btn-sync-import {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; max-width: 400px;
+  padding: 11px 20px;
+  background: transparent; color: var(--green-dark);
+  border: 2px solid var(--green-dark); border-radius: var(--radius);
+  font-size: 14px; font-weight: 600;
+}
 
 .import-error {
   width: 100%; max-width: 400px;

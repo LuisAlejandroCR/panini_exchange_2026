@@ -18,7 +18,7 @@ function syncBroadcastBundle() {
 }
 
 function syncBroadcastFull() {
-  _send({ t: 'f', states: stickerState, bundle: [...bundleSet] });
+  _send({ t: 'f', stickers, states: stickerState, bundle: [...bundleSet] });
 }
 
 function _send(msg) {
@@ -28,12 +28,21 @@ function _send(msg) {
 // ── Inbound apply ─────────────────────────────────────────────
 function _apply(msg) {
   if (msg.t === 'f') {
+    if (msg.stickers && msg.stickers.length > 0) {
+      stickers = msg.stickers;
+      localStorage.setItem(SK.data, JSON.stringify(stickers));
+    }
     Object.assign(stickerState, msg.states);
     bundleSet = new Set(msg.bundle);
     saveState();
-    renderInventory();
-    refreshChipCounts();
-    refreshBundleUI();
+    const onImport = !document.getElementById('import-screen').hidden;
+    if (onImport) {
+      launchApp();        // auto-launch: guest skips the import screen
+    } else {
+      renderInventory();
+      refreshChipCounts();
+      refreshBundleUI();
+    }
   } else if (msg.t === 's') {
     stickerState[msg.id] = msg.st;
     if (msg.st === 'Sold') bundleSet.delete(msg.id);
