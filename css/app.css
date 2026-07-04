@@ -333,6 +333,7 @@ button { font-family: inherit; cursor: pointer; }
 .s-available { background: #d4edda; color: #155724; }
 .s-reserved  { background: var(--amber-light); color: #7c4200; }
 .s-sold      { background: var(--red-light);   color: #842029; }
+.status-btn:disabled { opacity: .4; cursor: not-allowed; }
 
 .add-btn {
   width: 32px; height: 32px; border-radius: 50%;

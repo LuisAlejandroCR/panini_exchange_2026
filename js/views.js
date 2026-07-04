@@ -51,7 +51,8 @@ function buildCard(s) {
     </div>
     <div class="card-actions">
       <button class="status-btn ${STATUS_CLASS[st]}"
-              onclick="onCycleStatus('${s.id}')">${st === 'Reserved' ? '↩ ' : ''}${STATUS_LABELS[st]}</button>
+              onclick="onCycleStatus('${s.id}')"
+              ${isLocked ? 'disabled' : ''}>${st === 'Reserved' ? '↩ ' : ''}${STATUS_LABELS[st]}</button>
       ${actionBtn}
     </div>`;
   return card;
