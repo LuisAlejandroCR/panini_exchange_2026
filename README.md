@@ -101,17 +101,21 @@ Tap **"Marcar todo como Reservado"** to reserve all selected stickers and clear 
 
 Two devices can share inventory state in real time without any account or cloud service. Data flows directly between devices via WebRTC (PeerJS).
 
+> **Important:** Device A must import its CSV file before creating a session. The session transmits Device A's current inventory to Device B on connect — if no file has been imported, Device B will receive an empty inventory.
+
 ### How to connect
 
-**Device A (host):**
-1. Tap the 🔗 button in the header
-2. Tap **"Crear sesión"** → a 6-character code appears
-3. Share the code via WhatsApp
+**Device A (host) — must have inventory loaded first:**
+1. Import your CSV file
+2. Tap the 🔗 button in the header (also available on the import screen)
+3. Tap **"Crear sesión"** → a join link is generated
+4. Tap **"Enviar por WhatsApp"** → native share sheet opens; after sharing, the browser returns to the foreground automatically
+5. Keep the app tab open while Device B connects
 
 **Device B (guest):**
-1. Tap 🔗 — available from both the import screen and the app header
-2. Type the 6-character code → tap **"Unirse"**
-3. The inventory syncs automatically — if Device B is on the import screen, the app launches with the host's full data (no CSV needed)
+1. Tap the link received via WhatsApp → the app opens and connects automatically
+2. A spinner shows while waiting for Device A — retries for up to 60 seconds if the host is not yet ready
+3. Once connected, the full inventory syncs instantly (no CSV needed on Device B)
 
 ### What syncs
 
@@ -119,18 +123,26 @@ Two devices can share inventory state in real time without any account or cloud 
 |--------|--------|
 | Status change (Available / Reserved / Sold) | ✅ both devices see it instantly |
 | "Marcar todo como Reservado" | ✅ those items show Reserved everywhere |
-| Sticker added to bundle | 🔒 other device sees amber **🤝 En negociación** badge — the card is locked |
+| Sticker added to bundle | 🔒 other device sees amber **🤝 En negociación** badge — card is locked |
 | Bundle contents and offer price | ❌ local only — each user negotiates independently |
 
 ### Negotiation lock
 
-When a sticker is in someone's active bundle, the other device sees it with an amber left border and a **🤝 En negociación** badge. The `+` button is disabled. The lock releases automatically when the user removes the sticker from their bundle, marks it Reserved/Sold, or disconnects.
+When a sticker is in someone's active bundle, the other device sees it with an amber left border and a **🤝 En negociación** badge. Both the status button and the `+` button are disabled. The lock releases automatically when the user removes the sticker from their bundle, marks it Reserved/Sold, or disconnects.
+
+### Mobile tab suspension
+
+Mobile browsers suspend background tabs. If you switch away from the app (e.g. to check WhatsApp), the connection may drop. The app handles this automatically:
+
+- **Device A (host):** peer is silently recreated with the same session code when the tab becomes active again
+- **Device B (guest):** retries the connection every 6 seconds for up to 60 seconds, so it reconnects as soon as Device A's tab is active
 
 ### Requirements
 
 - Both devices must be online (internet required for the initial WebRTC handshake)
-- Keep the app tab active on both devices — mobile browsers may suspend background tabs
-- One deal at a time per session: if two users edit simultaneously without syncing, last import wins on the export/import flow
+- Device A must import its inventory file before creating the session
+- Keep the app tab active on both devices during an active session
+- One active connection per session (one host, one guest)
 
 ---
 
@@ -140,7 +152,7 @@ When a sticker is in someone's active bundle, the other device sees it with an a
 panini_exchange_2026/
 ├── index.html          # App shell
 ├── css/
-│   └── app.css         # Styles — vanilla/green light theme, no dark mode
+│   └── app.css         # Styles — vanilla/green light theme
 ├── js/
 │   ├── parsers.js      # CSV and XLSX parsers (zero local dependencies)
 │   ├── store.js        # State, localStorage, bundle and discount logic
@@ -160,8 +172,9 @@ External dependency: [PeerJS](https://peerjs.com) CDN (`peerjs@1.5.4`) — loade
 |---------|----------------|
 | XLSX parser (`DecompressionStream`) | Chrome 80 · Firefox 113 · Safari 16.4 |
 | Real-time sync (`RTCPeerConnection`) | Chrome 56 · Firefox 44 · Safari 11 |
+| Native share sheet (`navigator.share`) | iOS Safari 12.1 · Android Chrome 61 |
 
-For older browsers, export your Excel file as CSV before importing.
+For older browsers, export your Excel file as CSV before importing. The WhatsApp share button falls back to a direct `wa.me` link on desktop.
 
 ---
 

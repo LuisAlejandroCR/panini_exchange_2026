@@ -63,6 +63,10 @@ function _apply(msg) {
 
 // ── Host ──────────────────────────────────────────────────────
 function syncCreateSession() {
+  if (stickers.length === 0) {
+    _showError('Primero importa tu inventario. El otro dispositivo lo recibirá al conectarse.');
+    return;
+  }
   const code = Math.random().toString(36).slice(2, 8).toUpperCase();
   localStorage.setItem(SK_SESSION, JSON.stringify({ role: 'host', code }));
   _createHost(code);
@@ -231,12 +235,20 @@ async function syncCopyCode() {
   }
 }
 
-function syncShareWhatsApp() {
+async function syncShareWhatsApp() {
   const code    = document.getElementById('sync-code-val').textContent;
   const baseUrl = location.origin + location.pathname.replace(/index\.html$/, '');
   const joinUrl = `${baseUrl}?join=${code}`;
-  const text    = encodeURIComponent(
-    `Únete a mi inventario Panini Exchange 🃏\n${joinUrl}`
-  );
-  window.open(`https://wa.me/?text=${text}`, '_blank');
+  const shareText = `Únete a mi inventario Panini Exchange 🃏\n${joinUrl}`;
+
+  // Native share sheet (mobile) — browser stays in foreground after sharing
+  if (navigator.share) {
+    try {
+      await navigator.share({ text: shareText });
+      return;
+    } catch { /* user cancelled or share failed — fall through */ }
+  }
+
+  // Desktop fallback: open WhatsApp directly
+  window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
 }
