@@ -194,11 +194,10 @@ function _showCode(code) {
 }
 
 function _showJoining(attempt) {
-  document.getElementById('sync-code-val').textContent   = '——';
-  document.getElementById('sync-status-msg').textContent = attempt > 1
+  document.getElementById('sync-join-msg').textContent = attempt > 1
     ? `Esperando al anfitrión… (${attempt}/${MAX_JOIN_ATTEMPTS})`
     : 'Conectando…';
-  _setState('sync-hosting');
+  _setState('sync-joining');
 }
 
 function _showConnected(msg) {
@@ -214,7 +213,7 @@ function _showError(msg) {
 }
 
 function _setState(activeId) {
-  ['sync-idle', 'sync-hosting', 'sync-connected', 'sync-error'].forEach(id => {
+  ['sync-idle', 'sync-hosting', 'sync-joining', 'sync-connected', 'sync-error'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.hidden = (id !== activeId);
   });
