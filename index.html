@@ -33,20 +33,6 @@
   <button class="btn-sync-import" onclick="openSyncPanel()">
     🔗&nbsp; Unirse a sesión en tiempo real
   </button>
-
-  <div class="import-cols">
-    <h4>Columnas requeridas</h4>
-    <div class="col-item req"><span class="col-name">sticker</span><span class="col-desc">Nombre de la lámina — ej: ARG01 Messi</span></div>
-    <div class="col-item req"><span class="col-name">price_low</span><span class="col-desc">Precio mínimo que aceptas (tu costo)</span></div>
-    <div class="col-item req"><span class="col-name">publish_low</span><span class="col-desc">Precio que pides al comprador</span></div>
-    <h4 style="margin-top:10px">Columnas opcionales</h4>
-    <div class="col-item opt"><span class="col-name">category</span><span class="col-desc">Tipo: Jugador, Escudo, Especial…</span></div>
-    <div class="col-item opt"><span class="col-name">price_high</span><span class="col-desc">Precio máximo de venta</span></div>
-    <div class="col-item opt"><span class="col-name">publish_high</span><span class="col-desc">Precio publicado máximo (muestra rango)</span></div>
-    <div class="col-item opt"><span class="col-name">status</span><span class="col-desc">Available · Reserved · Sold</span></div>
-    <div class="col-item opt"><span class="col-name">quantity · condition · notes</span><span class="col-desc">Cantidad, estado físico, notas</span></div>
-    <div class="col-alias">También acepta español: lamina · vender_low · publicar_low · estado</div>
-  </div>
 </div>
 
 <!-- ═══════════════════ MAIN APP ═══════════════════ -->
@@ -144,6 +130,46 @@
 
 </div><!-- #app -->
 
+<!-- ── Demo tour ── -->
+<div class="tour-overlay" id="tour-overlay" hidden>
+  <div class="tour-card">
+    <button class="tour-skip" onclick="tourClose()" title="Saltar">✕</button>
+
+    <div id="tour-step-1">
+      <div class="tour-icon">🃏</div>
+      <h3 class="tour-title">Bienvenido a Panini Exchange</h3>
+      <p class="tour-text">Gestiona tu colección de láminas, negocia paquetes con descuento y sincroniza con tu compañero — sin cuenta, sin nube.</p>
+    </div>
+
+    <div id="tour-step-2" hidden>
+      <div class="tour-icon">📂</div>
+      <h3 class="tour-title">Importa tu inventario</h3>
+      <p class="tour-text">Descarga la plantilla CSV, llena tus láminas con sus precios y arrástrala aquí. Solo tú ves tu precio mínimo (tu costo real).</p>
+    </div>
+
+    <div id="tour-step-3" hidden>
+      <div class="tour-icon">📋</div>
+      <h3 class="tour-title">Gestiona cada lámina</h3>
+      <p class="tour-text">Toca el estado para cambiar entre <strong>Disponible ↔ Reservado</strong>. Usa <strong>✓ Vender</strong> para confirmar la venta. Filtra por estado o busca por nombre.</p>
+    </div>
+
+    <div id="tour-step-4" hidden>
+      <div class="tour-icon">💰</div>
+      <h3 class="tour-title">Negocia en paquete</h3>
+      <p class="tour-text">Toca <strong>+</strong> en las láminas a vender juntas. La pestaña <em>Negociar</em> calcula el descuento (5–12%) y genera el mensaje de WhatsApp. Tu precio mínimo queda privado.</p>
+    </div>
+
+    <div id="tour-step-5" hidden>
+      <div class="tour-icon">🔗</div>
+      <h3 class="tour-title">Sincroniza en tiempo real</h3>
+      <p class="tour-text">Toca 🔗, crea una sesión e invita a tu compañero por WhatsApp. Los cambios de estado se sincronizan al instante vía P2P — cada uno negocia sus propios paquetes.</p>
+    </div>
+
+    <div class="tour-dots" id="tour-dots"></div>
+    <button class="tour-btn-next" id="tour-btn-next" onclick="tourNext()">Siguiente →</button>
+  </div>
+</div>
+
 <!-- ── Sync overlay + panel (global — works on import screen and app) ── -->
 <div class="sync-overlay" id="sync-overlay" hidden onclick="closeSyncPanel()"></div>
 <div class="sync-panel" id="sync-panel" hidden>
@@ -155,8 +181,10 @@
   <!-- Idle -->
   <div id="sync-idle">
     <p class="sync-hint">Conecta dos dispositivos sin cuenta ni nube.<br>Los cambios se sincronizan al instante vía P2P.</p>
-    <button class="btn-sync-create" onclick="syncCreateSession()">📡 Crear sesión</button>
-    <div class="sync-divider">— o únete a una sesión existente —</div>
+    <div id="sync-host-section">
+      <button class="btn-sync-create" onclick="syncCreateSession()">📡 Crear sesión</button>
+      <div class="sync-divider">— o únete a una sesión existente —</div>
+    </div>
     <div class="sync-join-row">
       <input class="sync-code-input" id="sync-join-input" type="text"
              maxlength="6" placeholder="CÓDIGO" autocomplete="off"

@@ -97,11 +97,27 @@ function wireDropZone() {
 
 // ── Template download ─────────────────────────────────────────
 function downloadTemplate() {
-  const headers  = 'id,sticker,category,price_low,price_high,publish_low,publish_high,status,quantity,condition,notes';
-  const desc     = '# (opcional),(requerido) nombre de la lámina ej: ARG01 Messi,Jugador / Escudo / Especial,(requerido) tu costo mínimo aceptable,precio máximo de venta (opcional),,(requerido) precio que publicas al comprador,precio publicado máximo (opcional),Available / Reserved / Sold,cuántas tienes,estado físico,notas libres';
-  const example1 = 'S1,ARG01 Messi,Jugador,3000,5000,10000,15000,Available,1,,';
-  const example2 = 'S2,BRA07 Vinicius,Jugador,2000,3000,8000,12000,Available,1,,';
-  const blob = new Blob([[headers, desc, example1, example2].join('\n')], { type: 'text/csv' });
+  const lines = [
+    '# PANINI EXCHANGE 2026 — Plantilla de inventario',
+    '# Columnas requeridas: sticker, price_low, publish_low',
+    '# También acepta nombres en español: lamina, vender_low, publicar_low, estado, cantidad, notas',
+    '#',
+    '# id          → (opcional) identificador único — se genera automáticamente si se omite',
+    '# sticker     → (requerido) nombre de la lámina — ej: ARG01 Messi',
+    '# category    → (opcional) tipo: Jugador, Escudo, Especial, Museum, WE ARE, otro',
+    '# price_low   → (requerido) tu precio mínimo aceptable (tu costo real, solo tú lo ves)',
+    '# price_high  → (opcional) precio máximo de venta',
+    '# publish_low → (requerido) precio que publicas al comprador',
+    '# publish_high→ (opcional) precio publicado máximo (muestra rango)',
+    '# status      → (opcional) Available / Reserved / Sold  — por defecto: Available',
+    '# quantity    → (opcional) cuántas unidades tienes — por defecto: 1',
+    '# condition   → (opcional) estado físico de la lámina',
+    '# notes       → (opcional) notas libres',
+    'id,sticker,category,price_low,price_high,publish_low,publish_high,status,quantity,condition,notes',
+    'S1,ARG01 Messi,Jugador,3000,5000,10000,15000,Available,1,,',
+    'S2,BRA07 Vinicius,Jugador,2000,3000,8000,12000,Available,1,,',
+  ];
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
   const url  = URL.createObjectURL(blob);
   const a    = Object.assign(document.createElement('a'), { href: url, download: 'panini_exchange_template.csv' });
   a.click();
@@ -136,6 +152,42 @@ function exportCurrentState() {
   URL.revokeObjectURL(url);
 }
 
+// ── Demo tour ─────────────────────────────────────────────────
+const TOUR_TOTAL = 5;
+let _tourStep = 1;
+
+function initTour() {
+  if (localStorage.getItem('px26-tour-done')) return;
+  _tourStep = 1;
+  _tourRenderDots();
+  document.getElementById('tour-overlay').hidden = false;
+}
+
+function tourNext() {
+  document.getElementById(`tour-step-${_tourStep}`).hidden = true;
+  _tourStep++;
+  if (_tourStep > TOUR_TOTAL) { tourClose(); return; }
+  document.getElementById(`tour-step-${_tourStep}`).hidden = false;
+  _tourRenderDots();
+  document.getElementById('tour-btn-next').textContent =
+    _tourStep === TOUR_TOTAL ? '¡Empezar! ✓' : 'Siguiente →';
+}
+
+function tourClose() {
+  localStorage.setItem('px26-tour-done', '1');
+  document.getElementById('tour-overlay').hidden = true;
+}
+
+function _tourRenderDots() {
+  const el = document.getElementById('tour-dots');
+  el.innerHTML = '';
+  for (let i = 1; i <= TOUR_TOTAL; i++) {
+    const d = document.createElement('span');
+    d.className = 'tour-dot' + (i === _tourStep ? ' active' : '');
+    el.appendChild(d);
+  }
+}
+
 // ── Deep-link join (?join=CODE) ───────────────────────────────
 function _checkJoinParam() {
   const code = new URLSearchParams(location.search).get('join');
@@ -149,5 +201,8 @@ function _checkJoinParam() {
 loadStorage();
 wireDropZone();
 if (stickers.length > 0) launchApp();
-else document.getElementById('import-screen').hidden = false;
+else {
+  document.getElementById('import-screen').hidden = false;
+  initTour();
+}
 _checkJoinParam();

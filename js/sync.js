@@ -179,7 +179,9 @@ function _onDisconnect() {
 }
 
 // ── Panel UI states ───────────────────────────────────────────
-function openSyncPanel()  {
+function openSyncPanel() {
+  // Hide "Crear sesión" when no inventory is loaded — device can only join as guest
+  document.getElementById('sync-host-section').hidden = (stickers.length === 0);
   document.getElementById('sync-panel').hidden   = false;
   document.getElementById('sync-overlay').hidden = false;
 }
