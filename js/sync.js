@@ -204,11 +204,11 @@ async function syncCopyCode() {
 }
 
 function syncShareWhatsApp() {
-  const code = document.getElementById('sync-code-val').textContent;
-  const text = encodeURIComponent(
-    `Únete a mi inventario Panini Exchange 🃏\n` +
-    `Código de sesión: *${code}*\n\n` +
-    `Abre la app → toca 🔗 → escribe el código → Unirse`
+  const code    = document.getElementById('sync-code-val').textContent;
+  const baseUrl = location.origin + location.pathname.replace(/index\.html$/, '');
+  const joinUrl = `${baseUrl}?join=${code}`;
+  const text    = encodeURIComponent(
+    `Únete a mi inventario Panini Exchange 🃏\n${joinUrl}`
   );
   window.open(`https://wa.me/?text=${text}`, '_blank');
 }

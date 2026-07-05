@@ -136,8 +136,18 @@ function exportCurrentState() {
   URL.revokeObjectURL(url);
 }
 
+// ── Deep-link join (?join=CODE) ───────────────────────────────
+function _checkJoinParam() {
+  const code = new URLSearchParams(location.search).get('join');
+  if (!code || code.length < 6) return;
+  history.replaceState(null, '', location.pathname); // clean URL so refresh doesn't re-trigger
+  openSyncPanel();
+  syncJoinSession(code);
+}
+
 // ── Init ──────────────────────────────────────────────────────
 loadStorage();
 wireDropZone();
 if (stickers.length > 0) launchApp();
 else document.getElementById('import-screen').hidden = false;
+_checkJoinParam();
