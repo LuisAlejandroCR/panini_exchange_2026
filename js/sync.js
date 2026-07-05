@@ -1,9 +1,9 @@
 // ── Real-time sync (WebRTC / PeerJS) ─────────────────────────
 // Requires internet for the initial handshake only.
 // After that, data flows directly device-to-device (P2P).
-// Option B (PartyKit / Liveblocks) would add offline resilience if needed.
 
-const SYNC_PREFIX = 'px26-';
+const SYNC_PREFIX   = 'px26-';
+const SK_SESSION    = 'px26-session'; // persists role+code across tab suspensions
 
 let _peer = null;
 let _conn = null;
@@ -11,10 +11,6 @@ let _conn = null;
 // ── Outbound broadcasts ───────────────────────────────────────
 function syncBroadcastStatus(id, status) {
   _send({ t: 's', id, st: status });
-}
-
-function syncBroadcastBundle() {
-  _send({ t: 'b', ids: [...bundleSet] });
 }
 
 function syncBroadcastFull() {
@@ -68,12 +64,25 @@ function _apply(msg) {
 // ── Host ──────────────────────────────────────────────────────
 function syncCreateSession() {
   const code = Math.random().toString(36).slice(2, 8).toUpperCase();
+  localStorage.setItem(SK_SESSION, JSON.stringify({ role: 'host', code }));
+  _createHost(code);
+}
+
+function _createHost(code) {
+  if (_peer) { try { _peer.destroy(); } catch {} _peer = null; }
+  _conn = null;
   _peer = new Peer(SYNC_PREFIX + code, { debug: 0 });
 
   _peer.on('open', () => _showCode(code));
   _peer.on('error', e => {
-    if (e.type === 'unavailable-id') syncCreateSession();
-    else _showError('Error al crear sesión. Verifica tu conexión.');
+    if (e.type === 'unavailable-id') {
+      // Code collision — generate new one and try again
+      const newCode = Math.random().toString(36).slice(2, 8).toUpperCase();
+      localStorage.setItem(SK_SESSION, JSON.stringify({ role: 'host', code: newCode }));
+      _createHost(newCode);
+    } else {
+      _showError('Error al crear sesión. Verifica tu conexión.');
+    }
   });
   _peer.on('connection', c => {
     _conn = c;
@@ -87,11 +96,14 @@ function syncCreateSession() {
 // ── Guest ─────────────────────────────────────────────────────
 function syncJoinSession(code) {
   if (!code || code.trim().length < 6) return;
+  const normalized = code.trim().toUpperCase();
+  localStorage.setItem(SK_SESSION, JSON.stringify({ role: 'guest', code: normalized }));
   _showJoining();
+  if (_peer) { try { _peer.destroy(); } catch {} _peer = null; }
   _peer = new Peer({ debug: 0 });
 
   _peer.on('open', () => {
-    _conn = _peer.connect(SYNC_PREFIX + code.trim().toUpperCase());
+    _conn = _peer.connect(SYNC_PREFIX + normalized);
     _conn.on('open',  () => { syncBroadcastLock(); _showConnected('Conectado al anfitrión'); });
     _conn.on('data',  _apply);
     _conn.on('close', _onDisconnect);
@@ -100,8 +112,26 @@ function syncJoinSession(code) {
   _peer.on('error', () => _showError('Error de conexión. Verifica el código.'));
 }
 
+// ── Auto-reconnect after mobile tab suspension ────────────────
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;           // tab going to background — nothing to do
+  if (_conn && _conn.open) return;       // still connected — fine
+
+  const saved = _getSavedSession();
+  if (!saved || saved.role !== 'host') return;
+
+  // Tab returned from background and host peer is dead — silently re-create with same code
+  // The other device will reconnect automatically when the peer is ready
+  _createHost(saved.code);
+});
+
+function _getSavedSession() {
+  try { return JSON.parse(localStorage.getItem(SK_SESSION)); } catch { return null; }
+}
+
 // ── Disconnect ────────────────────────────────────────────────
 function syncDisconnect() {
+  localStorage.removeItem(SK_SESSION);
   if (_conn)  { try { _conn.close();   } catch {} _conn  = null; }
   if (_peer)  { try { _peer.destroy(); } catch {} _peer = null; }
   _onDisconnect();
@@ -131,13 +161,13 @@ function closeSyncPanel() {
 function syncRetry() { _setState('sync-idle'); }
 
 function _showCode(code) {
-  document.getElementById('sync-code-val').textContent  = code;
+  document.getElementById('sync-code-val').textContent   = code;
   document.getElementById('sync-status-msg').textContent = 'Esperando conexión…';
   _setState('sync-hosting');
 }
 
 function _showJoining() {
-  document.getElementById('sync-code-val').textContent  = '——';
+  document.getElementById('sync-code-val').textContent   = '——';
   document.getElementById('sync-status-msg').textContent = 'Conectando…';
   _setState('sync-hosting');
 }
@@ -171,4 +201,14 @@ async function syncCopyCode() {
   } catch {
     prompt('Comparte este código:', code);
   }
+}
+
+function syncShareWhatsApp() {
+  const code = document.getElementById('sync-code-val').textContent;
+  const text = encodeURIComponent(
+    `Únete a mi inventario Panini Exchange 🃏\n` +
+    `Código de sesión: *${code}*\n\n` +
+    `Abre la app → toca 🔗 → escribe el código → Unirse`
+  );
+  window.open(`https://wa.me/?text=${text}`, '_blank');
 }

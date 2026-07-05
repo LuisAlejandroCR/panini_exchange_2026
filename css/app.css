@@ -199,10 +199,15 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 44px; font-weight: 800; letter-spacing: 10px; text-align: center;
   color: var(--green-dark); margin: 12px 0;
 }
-.btn-sync-copy {
+.btn-sync-wa {
   display: block; width: 100%; padding: 12px;
+  background: #25d366; border: none; color: #fff;
+  border-radius: var(--radius); font-size: 14px; font-weight: 700; margin-bottom: 8px;
+}
+.btn-sync-copy {
+  display: block; width: 100%; padding: 10px;
   background: transparent; border: 2px solid var(--green-dark); color: var(--green-dark);
-  border-radius: var(--radius); font-size: 14px; font-weight: 600; margin-bottom: 12px;
+  border-radius: var(--radius); font-size: 13px; font-weight: 600; margin-bottom: 12px;
 }
 .sync-status-msg { text-align: center; font-size: 13px; color: var(--muted); }
 .sync-state-icon { font-size: 48px; text-align: center; margin-bottom: 8px; }
