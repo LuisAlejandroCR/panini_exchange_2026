@@ -94,22 +94,49 @@ function _createHost(code) {
 }
 
 // ── Guest ─────────────────────────────────────────────────────
+// Retries up to MAX_JOIN_ATTEMPTS if the host peer is not yet available.
+// This covers the window where User A is switching back to the app
+// and the host auto-reconnect hasn't completed yet.
+const MAX_JOIN_ATTEMPTS = 10;
+const JOIN_RETRY_MS     = 6000; // 6 s × 10 = ~60 s total window
+
 function syncJoinSession(code) {
   if (!code || code.trim().length < 6) return;
   const normalized = code.trim().toUpperCase();
   localStorage.setItem(SK_SESSION, JSON.stringify({ role: 'guest', code: normalized }));
-  _showJoining();
+  _joinAttempt(normalized, 1);
+}
+
+function _joinAttempt(code, attempt) {
+  _showJoining(attempt);
   if (_peer) { try { _peer.destroy(); } catch {} _peer = null; }
+  _conn = null;
   _peer = new Peer({ debug: 0 });
 
   _peer.on('open', () => {
-    _conn = _peer.connect(SYNC_PREFIX + normalized);
+    _conn = _peer.connect(SYNC_PREFIX + code);
     _conn.on('open',  () => { syncBroadcastLock(); _showConnected('Conectado al anfitrión'); });
     _conn.on('data',  _apply);
     _conn.on('close', _onDisconnect);
-    _conn.on('error', () => _showError('Código no encontrado o sesión expirada.'));
+    _conn.on('error', () => _retryOrFail(code, attempt, 'Código incorrecto o sesión expirada.'));
   });
-  _peer.on('error', () => _showError('Error de conexión. Verifica el código.'));
+  _peer.on('error', e => {
+    if (e.type === 'peer-unavailable') {
+      // Host not ready yet (app suspended or reconnecting) — retry silently
+      _retryOrFail(code, attempt, 'El anfitrión no está disponible. Pídele que abra la app.');
+    } else {
+      _showError('Error de conexión. Verifica tu red.');
+    }
+  });
+}
+
+function _retryOrFail(code, attempt, finalMsg) {
+  if (attempt < MAX_JOIN_ATTEMPTS) {
+    if (_peer) { try { _peer.destroy(); } catch {} _peer = null; }
+    setTimeout(() => _joinAttempt(code, attempt + 1), JOIN_RETRY_MS);
+  } else {
+    _showError(finalMsg);
+  }
 }
 
 // ── Auto-reconnect after mobile tab suspension ────────────────
@@ -166,9 +193,11 @@ function _showCode(code) {
   _setState('sync-hosting');
 }
 
-function _showJoining() {
+function _showJoining(attempt) {
   document.getElementById('sync-code-val').textContent   = '——';
-  document.getElementById('sync-status-msg').textContent = 'Conectando…';
+  document.getElementById('sync-status-msg').textContent = attempt > 1
+    ? `Esperando al anfitrión… (${attempt}/${MAX_JOIN_ATTEMPTS})`
+    : 'Conectando…';
   _setState('sync-hosting');
 }
 
