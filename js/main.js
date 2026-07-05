@@ -95,33 +95,42 @@ function wireDropZone() {
   });
 }
 
-// ── Template download ─────────────────────────────────────────
+// ── Template download (2-tab Excel) ──────────────────────────
 function downloadTemplate() {
-  const lines = [
-    '# PANINI EXCHANGE 2026 — Plantilla de inventario',
-    '# Columnas requeridas: sticker, price_low, publish_low',
-    '# También acepta nombres en español: lamina, vender_low, publicar_low, estado, cantidad, notas',
-    '#',
-    '# id          → (opcional) identificador único — se genera automáticamente si se omite',
-    '# sticker     → (requerido) nombre de la lámina — ej: ARG01 Messi',
-    '# category    → (opcional) tipo: Jugador, Escudo, Especial, Museum, WE ARE, otro',
-    '# price_low   → (requerido) tu precio mínimo aceptable (tu costo real, solo tú lo ves)',
-    '# price_high  → (opcional) precio máximo de venta',
-    '# publish_low → (requerido) precio que publicas al comprador',
-    '# publish_high→ (opcional) precio publicado máximo (muestra rango)',
-    '# status      → (opcional) Available / Reserved / Sold  — por defecto: Available',
-    '# quantity    → (opcional) cuántas unidades tienes — por defecto: 1',
-    '# condition   → (opcional) estado físico de la lámina',
-    '# notes       → (opcional) notas libres',
-    'id,sticker,category,price_low,price_high,publish_low,publish_high,status,quantity,condition,notes',
-    'S1,ARG01 Messi,Jugador,3000,5000,10000,15000,Available,1,,',
-    'S2,BRA07 Vinicius,Jugador,2000,3000,8000,12000,Available,1,,',
+  const instrRows = [
+    ['PANINI EXCHANGE 2026 — Plantilla de inventario'],
+    [],
+    ['COLUMNAS REQUERIDAS', 'Descripción', 'Ejemplo / Notas'],
+    ['sticker',      'Nombre de la lámina',                       'ARG01 Messi'],
+    ['price_low',    'Tu precio mínimo (solo tú lo ves)',          '3000'],
+    ['publish_low',  'Precio que pides al comprador',              '10000'],
+    [],
+    ['COLUMNAS OPCIONALES', 'Descripción', 'Ejemplo / Notas'],
+    ['id',           'Identificador único',                        'S1  (auto si se omite)'],
+    ['category',     'Tipo de lámina',                            'Jugador · Escudo · Especial · Museum · WE ARE'],
+    ['price_high',   'Precio máximo de venta',                    '5000'],
+    ['publish_high', 'Precio publicado máximo (muestra rango)',    '15000'],
+    ['status',       'Estado inicial',                            'Available · Reserved · Sold  (por defecto: Available)'],
+    ['quantity',     'Unidades disponibles',                       '1  (por defecto: 1)'],
+    ['condition',    'Estado físico',                             'Nuevo, Usado…'],
+    ['notes',        'Notas libres',                              ''],
+    [],
+    ['NOMBRES EN ESPAÑOL TAMBIÉN ACEPTADOS', '', ''],
+    ['lamina',                   '→ sticker'],
+    ['vender_low / publicar_low','→ price_low / publish_low'],
+    ['estado / cantidad / notas','→ status / quantity / notes'],
   ];
-  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
-  const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement('a'), { href: url, download: 'panini_exchange_template.csv' });
-  a.click();
-  URL.revokeObjectURL(url);
+
+  const laminasRows = [
+    ['id','sticker','category','price_low','price_high','publish_low','publish_high','status','quantity','condition','notes'],
+    ['S1','ARG01 Messi',   'Jugador', 3000, 5000, 10000, 15000, 'Available', 1, '', ''],
+    ['S2','BRA07 Vinicius','Jugador', 2000, 3000,  8000, 12000, 'Available', 1, '', ''],
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(instrRows),   'Instrucciones');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(laminasRows), 'Láminas');
+  XLSX.writeFile(wb, 'panini_exchange_template.xlsx');
 }
 
 // ── Export current state ──────────────────────────────────────

@@ -8,6 +8,7 @@
   <title>Panini Exchange 2026</title>
   <link rel="stylesheet" href="css/app.css">
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -27,7 +28,7 @@
   <div class="import-error" id="import-error"></div>
 
   <button class="btn-primary" onclick="downloadTemplate()">
-    ⬇️&nbsp; Descargar plantilla CSV
+    ⬇️&nbsp; Descargar plantilla Excel
   </button>
 
   <button class="btn-sync-import" onclick="openSyncPanel()">
@@ -144,7 +145,7 @@
     <div id="tour-step-2" hidden>
       <div class="tour-icon">📂</div>
       <h3 class="tour-title">Importa tu inventario</h3>
-      <p class="tour-text">Descarga la plantilla CSV, llena tus láminas con sus precios y arrástrala aquí. Solo tú ves tu precio mínimo (tu costo real).</p>
+      <p class="tour-text">Descarga la plantilla Excel, llena la pestaña <em>Láminas</em> con tus stickers y sus precios, y arrástrala aquí. Solo tú ves tu precio mínimo (tu costo real).</p>
     </div>
 
     <div id="tour-step-3" hidden>
